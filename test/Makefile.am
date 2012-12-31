@@ -71,6 +71,15 @@ endif
 endif
 test_sources += $(test)
 
+if CAIRO_HAS_NSGL_FUNCTIONS
+cairo_nsgl_LIBS = \
+	-Xlinker -framework -Xlinker OpenGL \
+	-Xlinker -framework -Xlinker Appkit \
+	-Xlinker -framework -Xlinker Foundation
+else
+cairo_nsgl_LIBS =
+endif
+
 noinst_PROGRAMS = cairo-test-suite$(EXEEXT) # always build
 
 TESTS += cairo-test-suite$(EXEEXT)
@@ -84,6 +93,7 @@ cairo_test_suite_SOURCES = 		\
 	$(test_sources)			\
 	cairo-test-constructors.c
 cairo_test_suite_CFLAGS = $(AM_CFLAGS) $(real_pthread_CFLAGS) 
+cairo_test_suite_LDFLAGS = $(cairo_nsgl_LIBS)
 cairo_test_suite_LDADD = 					\
 	$(real_pthread_LIBS)					\
 	$(top_builddir)/test/pdiff/libpdiff.la 			\

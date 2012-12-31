@@ -126,6 +126,21 @@ cairo_gl_surface_create_for_dc (cairo_device_t		*device,
 				int			 height);
 #endif
 
+#if CAIRO_HAS_NSGL_FUNCTIONS
+
+cairo_public cairo_device_t *
+cairo_nsgl_device_create (void *abstract_ctx);
+
+cairo_public void *
+cairo_nsgl_device_get_context (cairo_device_t *device);
+
+cairo_public cairo_surface_t *
+cairo_gl_surface_create_for_view (cairo_device_t *device,
+				  void	 	 *abstract_view,
+				  int		 width,
+				  int		 height);
+#endif
+
 #if CAIRO_HAS_EGL_FUNCTIONS
 #include <EGL/egl.h>
 

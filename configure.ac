@@ -331,19 +331,20 @@ CAIRO_ENABLE_SURFACE_BACKEND(gl, OpenGL, no, [
   gl_REQUIRES="gl"
   PKG_CHECK_MODULES(gl, $gl_REQUIRES,, [
 	  dnl Fallback to searching for headers
-	  AC_CHECK_HEADER(GL/gl.h,, [use_gl="no (gl.pc nor OpenGL headers not found)"])
+	  AC_CHECK_HEADER([GL/gl.h, OpenGL/gl.h],[use_gl="yes"], [])
 	  if test "x$use_gl" = "xyes"; then
 	      gl_NONPKGCONFIG_CFLAGS=
-	      gl_NONPKGCONFIG_LIBS="-lGL"
+	      gl_NONPKGCONFIG_LIBS=
 	  fi])
 
   if test "x$have_dl" = "xyes" -a "x$have_dlsym" = "xyes"; then
-    gl_LIBS="$gl_LIBS -ldl"
+    gl_LIBS="-ldl"
   fi
 
   need_glx_functions=yes
   need_wgl_functions=yes
   need_egl_functions=yes
+  need_nsgl_functions=yes
 ])
 
 dnl ===========================================================================
@@ -427,7 +428,7 @@ CAIRO_ENABLE_FUNCTIONS(glx, GLX, auto, [
   if test "x$need_glx_functions" = "xyes"; then
     save_CFLAGS="$CFLAGS"
     CFLAGS="$CFLAGS $gl_CFLAGS $gl_NONPKGCONFIG_CFLAGS"
-    AC_CHECK_HEADER(GL/glx.h,, [use_glx="no (GLX headers not found)"])
+    AC_CHECK_HEADER(GL/glx.h,[need_nsgl_functions=no], [use_glx="no (GLX headers not found)"])
     glx_NONPKGCONFIG_CFLAGS=
     glx_NONPKGCONFIG_LIBS="-lGL"
     CFLAGS="$save_CFLAGS"
@@ -441,6 +442,22 @@ CAIRO_ENABLE_FUNCTIONS(wgl, WGL, auto, [
     AC_CHECK_HEADER(windows.h,, [use_wgl="no (WGL headers not found)"])
   else
       use_wgl="no (not required by any backend)"
+  fi
+])
+
+dnl ===========================================================================
+
+CAIRO_ENABLE_FUNCTIONS(nsgl, NSOpenGL, auto, [
+  if test "x$need_nsgl_functions" = "xyes"; then
+    dnl There is no pkgconfig for NSOpenGL; lets do a header check
+    AC_LANG_PUSH([Objective C])
+    AC_CHECK_HEADERS([AppKit/NSOpenGL.h], [], [use_nsgl="no (requires AppKit and OpenGL framework)"], [])
+    nsgl_LIBS="-Xlinker -framework -Xlinker OpenGL -Xlinker -framework -Xlinker AppKit"
+    AC_LANG_POP([Objective C])
+      gl_NONPKGCONFIG_CFLAGS=
+      gl_NONPKGCONFIG_LIBS=
+  else
+      use_nsgl="no (use --enable-nsgl=yes to enable)"
   fi
 ])
 

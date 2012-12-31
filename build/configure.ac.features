@@ -402,6 +402,7 @@ AC_DEFUN([CAIRO_REPORT],
 	echo "  GLX functions:   $use_glx"
 	echo "  WGL functions:   $use_wgl"
 	echo "  EGL functions:   $use_egl"
+	echo "  NSOpenGL functions: $use_nsgl"
 	echo "  X11-xcb functions: $use_xlib_xcb"
 	echo "  XCB-shm functions: $use_xcb_shm"
 	echo ""

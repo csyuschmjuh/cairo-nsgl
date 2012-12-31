@@ -34,11 +34,21 @@ EXTRA_PROGRAMS += \
 EXTRA_DIST += cairo-perf-diff COPYING
 EXTRA_LTLIBRARIES += libcairoperf.la
 
+if CAIRO_HAS_NSGL_FUNCTIONS
+cairo_nsgl_LIBS = \
+	-Xlinker -framework -Xlinker OpenGL \
+	-Xlinker -framework -Xlinker AppKit \
+	-Xlinker -framework -Xlinker Foundation
+else
+cairo_nsgl_LIBS =
+endif
+
 LDADD = libcairoperf.la \
 	$(top_builddir)/boilerplate/libcairoboilerplate.la \
 	$(top_builddir)/src/libcairo.la
 
 cairo_perf_micro_SOURCES = $(cairo_perf_micro_sources)
+cairo_perf_micro_LDFLAGS = $(cairo_nsgl_LIBS)
 cairo_perf_micro_LDADD = \
 	$(top_builddir)/perf/micro/libcairo-perf-micro.la \
 	$(LDADD)
@@ -55,6 +65,7 @@ libcairoperf_la_SOURCES = \
 cairo_analyse_trace_SOURCES = \
 	$(cairo_analyse_trace_sources)	\
 	$(cairo_analyse_trace_external_sources)
+cairo_analyse_trace_LDFLAGS = $(cairo_nsgl_LIBS)
 cairo_analyse_trace_LDADD =		\
 	$(top_builddir)/util/cairo-script/libcairo-script-interpreter.la \
 	$(top_builddir)/util/cairo-missing/libcairo-missing.la \
@@ -67,6 +78,7 @@ cairo_analyse_trace_DEPENDENCIES = \
 cairo_perf_trace_SOURCES = \
 	$(cairo_perf_trace_sources)	\
 	$(cairo_perf_trace_external_sources)
+cairo_perf_trace_LDFLAGS = $(cairo_nsgl_LIBS)
 cairo_perf_trace_LDADD =		\
 	$(top_builddir)/util/cairo-script/libcairo-script-interpreter.la \
 	$(top_builddir)/util/cairo-missing/libcairo-missing.la \
