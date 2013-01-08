@@ -17,7 +17,13 @@ endif
 endif
 
 if CAIRO_HAS_GL_SURFACE
-test_sources += $(gl_surface_test_sources)
+if CAIRO_HAS_GLX_FUNCTIONS
+  test_sources += $(gl_surface_test_sources)
+else
+if CAIRO_HAS_NSGL_FUNCTIONS
+  test_sources += $(nsgl_surface_test_sources)
+endif
+endif
 endif
 
 # Need to add quartz-surface-source

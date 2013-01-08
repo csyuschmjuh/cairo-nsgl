@@ -121,9 +121,8 @@ cairo_nsgl_device_create (void *abstract_ctx)
     if (unlikely (ctx == NULL))
 	return _cairo_gl_context_create_in_error (CAIRO_STATUS_NO_MEMORY);
 
-    [ctx->context makeCurrentContext];
-
     ctx->context = [nsgl_ctx retain];
+    [ctx->context makeCurrentContext];
 
     ctx->base.acquire = _nsgl_acquire;
     ctx->base.release = _nsgl_release;
